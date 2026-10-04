@@ -1,5 +1,5 @@
 FROM alpine:3.22
-ARG XRAY_VERSION=26.9.9
+ARG XRAY_VERSION=26.9.30
 RUN apk add --no-cache ca-certificates curl unzip bash jq openssl \
  && mkdir -p /usr/local/share/xray /etc/xray \
  && curl -fsSL "https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/Xray-linux-64.zip" -o /tmp/xray.zip \
