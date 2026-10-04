@@ -1,0 +1,63 @@
+{
+  "log": {
+    "loglevel": "__LOGLEVEL__"
+  },
+  "inbounds": [
+    {
+      "tag": "vless-xhttp",
+      "listen": "0.0.0.0",
+      "port": __PORT__,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "__UUID__",
+            "email": "hostless-xhttp"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "__XHTTP_PATH__",
+          "mode": "__XHTTP_MODE__"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "quic"],
+        "routeOnly": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "direct",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIPv4"
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpKeepAliveIdle": 60
+        }
+      }
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "protocol": ["bittorrent"],
+        "outboundTag": "block"
+      }
+    ]
+  }
+}
