@@ -1,0 +1,16 @@
+HOSTLESS QUICK START
+====================
+
+1) Create an App from this repository.
+2) Build system: Docker.
+3) Do NOT set PORT manually.
+4) Optional environment variables:
+   XRAY_UUID=<your UUID>
+   XRAY_XHTTP_PATH=/xhttp/
+   XRAY_XHTTP_MODE=auto
+   XRAY_LOGLEVEL=warning
+   DOMAIN=<your Hostless domain>
+5) Deploy.
+6) Wait for TCP health check.
+7) v2rayNG: VLESS / TLS / XHTTP / path /xhttp/
+8) Do NOT use /api/ws.
