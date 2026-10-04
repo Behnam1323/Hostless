@@ -22,13 +22,15 @@ case "$UUID" in
   *) echo "ERROR: XRAY_UUID is not a valid UUID: $UUID" >&2; exit 1;;
 esac
 
+CONFIG_FILE="/tmp/xray-config.json"
+
 sed \
   -e "s|__PORT__|$PORT|g" \
   -e "s|__UUID__|$UUID|g" \
   -e "s|__XHTTP_PATH__|$PATH_XHTTP|g" \
   -e "s|__XHTTP_MODE__|$MODE|g" \
   -e "s|__LOGLEVEL__|$LOGLEVEL|g" \
-  /etc/xray/config.template.json > /etc/xray/config.json
+  /etc/xray/config.template.json > "$CONFIG_FILE"
 
 # Optional startup information. DOMAIN is supplied by the user/Hostless environment.
 echo "--- Hostless Xray startup ---"
@@ -43,7 +45,7 @@ else
 fi
 
 echo "Validating Xray configuration..."
-xray run -test -config /etc/xray/config.json
+xray run -test -config "$CONFIG_FILE"
 
 echo "Starting Xray..."
-exec xray run -config /etc/xray/config.json
+exec xray run -config "$CONFIG_FILE"
