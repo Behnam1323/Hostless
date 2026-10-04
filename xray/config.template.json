@@ -4,7 +4,7 @@
   },
   "inbounds": [
     {
-      "tag": "vless-xhttp",
+      "tag": "vless-ws",
       "listen": "0.0.0.0",
       "port": __PORT__,
       "protocol": "vless",
@@ -12,21 +12,22 @@
         "clients": [
           {
             "id": "__UUID__",
-            "email": "hostless-xhttp"
+            "email": "hostless-ws"
           }
         ],
         "decryption": "none"
       },
       "streamSettings": {
-        "network": "xhttp",
-        "xhttpSettings": {
-          "path": "__XHTTP_PATH__",
-          "mode": "__XHTTP_MODE__"
+        "network": "ws",
+        "wsSettings": {
+          "path": "__WS_PATH__",
+          "maxEarlyData": 2048,
+          "earlyDataHeaderName": "Sec-WebSocket-Protocol"
         }
       },
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls", "quic"],
+        "destOverride": ["http", "tls"],
         "routeOnly": true
       }
     }
@@ -35,19 +36,19 @@
     {
       "tag": "direct",
       "protocol": "freedom",
-      "settings": {
-        "domainStrategy": "UseIPv4"
-      },
+      "settings": {},
       "streamSettings": {
         "sockopt": {
           "tcpFastOpen": true,
-          "tcpKeepAliveIdle": 60
+          "tcpKeepAliveIdle": 60,
+          "tcpNoDelay": true
         }
       }
     },
     {
       "tag": "block",
-      "protocol": "blackhole"
+      "protocol": "blackhole",
+      "settings": {}
     }
   ],
   "routing": {
