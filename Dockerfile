@@ -1,19 +1,18 @@
-FROM alpine:3.22
+FROM alpine:3.20 AS fetch
+RUN apk add --no-cache curl tar ca-certificates
 ARG XRAY_VERSION=26.9.30
-RUN apk add --no-cache ca-certificates curl unzip bash jq openssl \
- && mkdir -p /usr/local/share/xray /etc/xray \
- && curl -fsSL "https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/Xray-linux-64.zip" -o /tmp/xray.zip \
- && unzip -q /tmp/xray.zip -d /usr/local/share/xray \
- && mv /usr/local/share/xray/xray /usr/local/bin/xray \
- && chmod +x /usr/local/bin/xray \
- && rm -rf /tmp/xray.zip /usr/local/share/xray
+RUN curl -fsSL "https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/Xray-linux-64-v${XRAY_VERSION}.zip" -o /tmp/xray.zip \
+ && mkdir -p /tmp/xray \
+ && cd /tmp/xray \
+ && unzip /tmp/xray.zip xray LICENSE geoip.dat geosite.dat 2>/dev/null || (apk add --no-cache unzip && unzip /tmp/xray.zip xray LICENSE geoip.dat geosite.dat)
+
+FROM alpine:3.20
+RUN apk add --no-cache ca-certificates tzdata
+COPY --from=fetch /tmp/xray/xray /usr/local/bin/xray
+COPY --from=fetch /tmp/xray/geoip.dat /usr/local/share/xray/geoip.dat
+COPY --from=fetch /tmp/xray/geosite.dat /usr/local/share/xray/geosite.dat
 COPY xray/config.template.json /etc/xray/config.template.json
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-COPY README.md /README.md
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENV XRAY_UUID=a9359e2d-3c7f-49c4-a4ea-f90249c5269a \
-    XRAY_XHTTP_PATH=/xhttp/ \
-    XRAY_XHTTP_MODE=auto \
-    XRAY_LOGLEVEL=warning
-EXPOSE 8080
+ENV XRAY_LOCATION_ASSET=/usr/local/share/xray
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

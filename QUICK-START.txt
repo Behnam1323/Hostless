@@ -1,16 +1,26 @@
-HOSTLESS QUICK START
-====================
+HOSTLESS VLESS + WebSocket
 
-1) Create an App from this repository.
-2) Build system: Docker.
-3) Do NOT set PORT manually.
-4) Optional environment variables:
-   XRAY_UUID=<your UUID>
-   XRAY_XHTTP_PATH=/xhttp/
-   XRAY_XHTTP_MODE=auto
-   XRAY_LOGLEVEL=warning
-   DOMAIN=<your Hostless domain>
-5) Deploy.
-6) Wait for TCP health check.
-7) v2rayNG: VLESS / TLS / XHTTP / path /xhttp/
-8) Do NOT use /api/ws.
+1. Push/import the repository with these files at repository root.
+2. In Hostless choose Docker.
+3. Leave PORT unset: Hostless supplies PORT automatically.
+4. Deploy.
+5. The runtime log should show:
+   Configuration OK.
+   Starting Xray...
+   Xray ... started
+
+v2rayNG:
+Address: your-app.hostless.app
+Port: 443
+Protocol: VLESS
+UUID: a9359e2d-3c7f-49c4-a4ea-f90249c5269a
+Network: WebSocket (ws)
+Path: /api/ws
+TLS: ON
+SNI: your-app.hostless.app
+Host: your-app.hostless.app
+ALPN: http/1.1
+Flow: empty
+
+Do not use XHTTP or /xhttp/ in this version.
+Hostless terminates HTTPS and forwards the WebSocket connection to Xray.
